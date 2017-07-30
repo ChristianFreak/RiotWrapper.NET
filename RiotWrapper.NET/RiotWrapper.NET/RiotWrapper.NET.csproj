@@ -1,0 +1,146 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{E4523061-4588-4202-80AA-6B9794225084}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>RiotWrapper.NET</RootNamespace>
+    <AssemblyName>RiotWrapper.NET</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ApiCaller.cs" />
+    <Compile Include="Champion-Mastery-V3\ChampionMastery.cs" />
+    <Compile Include="Champion-V3\Champion.cs" />
+    <Compile Include="Champion-V3\ChampionList.cs" />
+    <Compile Include="Enums.cs" />
+    <Compile Include="League-V3\LeagueList.cs" />
+    <Compile Include="League-V3\LeaguePosition.cs" />
+    <Compile Include="League-V3\LeaueItem.cs" />
+    <Compile Include="League-V3\MiniSeries.cs" />
+    <Compile Include="Masteries-V3\Mastery.cs" />
+    <Compile Include="Masteries-V3\MasteryPage.cs" />
+    <Compile Include="Masteries-V3\MasteryPages.cs" />
+    <Compile Include="Match-V3\Match.cs" />
+    <Compile Include="Match-V3\MatchEvent.cs" />
+    <Compile Include="Match-V3\MatchFrame.cs" />
+    <Compile Include="Match-V3\Matchlist.cs" />
+    <Compile Include="Match-V3\MatchMastery.cs" />
+    <Compile Include="Match-V3\MatchParticipantFrame.cs" />
+    <Compile Include="Match-V3\MatchPosition.cs" />
+    <Compile Include="Match-V3\MatchReference.cs" />
+    <Compile Include="Match-V3\MatchRune.cs" />
+    <Compile Include="Match-V3\MatchTimeline.cs" />
+    <Compile Include="Match-V3\Participant.cs" />
+    <Compile Include="Match-V3\ParticipantIdentity.cs" />
+    <Compile Include="Match-V3\ParticipantStats.cs" />
+    <Compile Include="Match-V3\ParticipantTimeline.cs" />
+    <Compile Include="Match-V3\Player.cs" />
+    <Compile Include="Match-V3\TeamBans.cs" />
+    <Compile Include="Match-V3\TeamStats.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Runes-V3\RunePage.cs" />
+    <Compile Include="Runes-V3\RunePages.cs" />
+    <Compile Include="Runes-V3\RuneSlot.cs" />
+    <Compile Include="Spectator-V3\BannedChampion.cs" />
+    <Compile Include="Spectator-V3\CurrentGameInfo.cs" />
+    <Compile Include="Spectator-V3\CurrentGameParticipant.cs" />
+    <Compile Include="Spectator-V3\FeaturedGameInfo.cs" />
+    <Compile Include="Spectator-V3\FeaturedGameParticipant.cs" />
+    <Compile Include="Spectator-V3\FeaturedGames.cs" />
+    <Compile Include="Spectator-V3\Observer.cs" />
+    <Compile Include="Spectator-V3\SpectatorMastery.cs" />
+    <Compile Include="Spectator-V3\SpectatorRune.cs" />
+    <Compile Include="Static\Champions\StaticBlock.cs" />
+    <Compile Include="Static\Champions\StaticBlockItem.cs" />
+    <Compile Include="Static\Champions\StaticChampion.cs" />
+    <Compile Include="Static\Champions\StaticChampionList.cs" />
+    <Compile Include="Static\Champions\StaticChampionSpell.cs" />
+    <Compile Include="Static\Champions\StaticInfo.cs" />
+    <Compile Include="Static\Champions\StaticPassive.cs" />
+    <Compile Include="Static\Champions\StaticRecommended.cs" />
+    <Compile Include="Static\Champions\StaticSkin.cs" />
+    <Compile Include="Static\Champions\StaticStats.cs" />
+    <Compile Include="Static\Items\StaticGold.cs" />
+    <Compile Include="Static\Items\StaticGroup.cs" />
+    <Compile Include="Static\Items\StaticInventoryDataStats.cs" />
+    <Compile Include="Static\Items\StaticItem.cs" />
+    <Compile Include="Static\Items\StaticItemList.cs" />
+    <Compile Include="Static\Items\StaticItemTree.cs" />
+    <Compile Include="Static\Maps\StaticMapData.cs" />
+    <Compile Include="Static\Maps\StaticMapDetails.cs" />
+    <Compile Include="Static\Masteries\StaticMastery.cs" />
+    <Compile Include="Static\Masteries\StaticMasteryList.cs" />
+    <Compile Include="Static\Masteries\StaticMasteryTree.cs" />
+    <Compile Include="Static\Masteries\StaticMasteryTreeItem.cs" />
+    <Compile Include="Static\Masteries\StaticMasteryTreeList.cs" />
+    <Compile Include="Static\ProfileIcons\StaticProfileIconData.cs" />
+    <Compile Include="Static\ProfileIcons\StaticProfileIconDetails.cs" />
+    <Compile Include="Static\Realms\StaticRealm.cs" />
+    <Compile Include="Static\Runes\StaticMetaData.cs" />
+    <Compile Include="Static\Runes\StaticRune.cs" />
+    <Compile Include="Static\Runes\StaticRuneList.cs" />
+    <Compile Include="Static\Runes\StaticRuneStats.cs" />
+    <Compile Include="Static\StaticApiCaller.cs" />
+    <Compile Include="Static\StaticEnums.cs" />
+    <Compile Include="Static\StaticImage.cs" />
+    <Compile Include="Static\StaticLevelTip.cs" />
+    <Compile Include="Static\StaticSpellVars.cs" />
+    <Compile Include="Static\SummonerSpells\StaticSummonerSpell.cs" />
+    <Compile Include="Static\SummonerSpells\StaticSummonerSpellList.cs" />
+    <Compile Include="Status-V3\Incident.cs" />
+    <Compile Include="Status-V3\Message.cs" />
+    <Compile Include="Status-V3\Service.cs" />
+    <Compile Include="Status-V3\ShardStatus.cs" />
+    <Compile Include="Status-V3\Translation.cs" />
+    <Compile Include="Summoner-V3\Summoner.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

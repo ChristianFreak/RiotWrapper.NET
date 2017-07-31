@@ -1,64 +1,84 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace RiotWrapper.NET
 {
     public class RateLimiter
     {
-        public int AppRequests { get; set; } = 0;
-        private int AppSecondRequests { get; set; }
-        private TimeSpan AppStartUpTime { get; set; }
-        private TimeSpan AppSecondsReset { get; set; }
+        //Per two minutes
+        private int CurrentAppRateLimitM { get; set; }
+        private int MaxAppRateLimitM { get; set; }
+        private int AppRateLimitTimeM { get; set; }
+        private TimeSpan AppRateLimitMStart { get; set; }
 
-        public void InitializeAppStartupTime(KeyValuePair<string, IEnumerable<string>> AppHeader)
+        //Per ten seconds
+        private int CurrentAppRateLimitS { get; set; }
+        private int MaxAppRateLimitS { get; set; }
+        private int AppRateLimitTimeS { get; set; }
+        private TimeSpan AppRateLimitSStart { get; set; }
+
+        public void InitializeMTime()
         {
-            string AppHeaderValue = AppHeader.Value.FirstOrDefault();
-                     
-            int AppRequestNumber = 0;
-            switch(AppHeaderValue.Length)
-            {
-                case 9:
-                    AppRequestNumber = int.Parse(AppHeaderValue.Remove(1, AppHeaderValue.Length - 1));
-                    break;
-                case 10:
-                    AppRequestNumber = int.Parse(AppHeaderValue.Remove(2, AppHeaderValue.Length - 2));
-                    break;
-                case 11:
-                    AppRequestNumber = int.Parse(AppHeaderValue.Remove(3, AppHeaderValue.Length - 3));
-                    break;              
-            }
-
-            AppRequests = AppRequestNumber;
-            AppSecondRequests = AppRequests;
-            AppStartUpTime = DateTime.Now.TimeOfDay;
-            AppSecondsReset = DateTime.Now.TimeOfDay;
+            AppRateLimitMStart = DateTime.Now.TimeOfDay;
         }
 
-        public bool CheckRateLimit()
+        public void InitializeSTime()
         {
-            if (AppRequests == AppSecondRequests + 18) // 18 per second
-            {              
-                int Difference = (int)DateTime.Now.TimeOfDay.Subtract(AppSecondsReset).TotalMilliseconds;
-                Console.WriteLine(Difference);
-                if (Difference > 0 && Difference < 1000)
-                {
-                    Thread.Sleep(1000 - Difference);
-                }
-                AppSecondRequests = AppRequests;
-                AppSecondsReset = DateTime.Now.TimeOfDay;
-            }
-            if (AppRequests >= 98) // 98 per 2 minutes
+            AppRateLimitSStart = DateTime.Now.TimeOfDay;
+        }
+
+        public void SetVariablesFromHeaderData(string CountHeaderValue, string LimitHeaderValue)
+        {
+            string[] CHeaderPairs = CountHeaderValue.Split(',');
+            string[] CHeaderPairValuesM = CHeaderPairs[0].Split(':');
+            string[] CHeaderPairValuesS = CHeaderPairs[1].Split(':');
+          
+            string[] LHeaderPairs = LimitHeaderValue.Split(',');
+            string[] LHeaderPairValuesM = LHeaderPairs[0].Split(':');
+            string[] LHeaderPairValuesS = LHeaderPairs[1].Split(':');
+
+            CurrentAppRateLimitM = int.Parse(CHeaderPairValuesM[0]);
+            CurrentAppRateLimitS = int.Parse(CHeaderPairValuesS[0]);
+
+            MaxAppRateLimitM = int.Parse(LHeaderPairValuesM[0]);
+            MaxAppRateLimitS = int.Parse(LHeaderPairValuesS[0]);
+
+            AppRateLimitTimeM = int.Parse(LHeaderPairValuesM[1]);
+            AppRateLimitTimeS = int.Parse(LHeaderPairValuesS[1]);
+        }
+
+        public async Task CheckRateLimits()
+        {
+            if(CurrentAppRateLimitS == MaxAppRateLimitS - 2)
             {
-                int Difference = (int)DateTime.Now.TimeOfDay.Subtract(AppStartUpTime).TotalMilliseconds;
-                if (Difference > 0 && Difference < 120000)
+                int SleepTime = (int)TimeDifference(AppRateLimitSStart);
+                if(SleepTime > 0 && SleepTime < AppRateLimitTimeS)
                 {
-                    Thread.Sleep(120000 - Difference);
+                    await Task.Delay(AppRateLimitTimeS * 1000 - SleepTime);
                 }
-                return true;
+                InitializeSTime();
             }
-            return false;
+
+            if(CurrentAppRateLimitM == MaxAppRateLimitM - 2)
+            {
+                int SleepTime = (int)TimeDifference(AppRateLimitMStart);
+                if(SleepTime > 0 && SleepTime < AppRateLimitTimeM * 1000)
+                {
+                    await Task.Delay(AppRateLimitTimeM * 1000 - SleepTime);
+                }             
+                InitializeMTime();
+            }
+        }
+
+        private double TimeDifference(TimeSpan InitialTime)
+        {
+            return DateTime.Now.TimeOfDay.TotalMilliseconds - InitialTime.TotalMilliseconds;
+        }
+
+        public void PrintCurrentRates()
+        {
+            Console.WriteLine($"{CurrentAppRateLimitM} : {MaxAppRateLimitM}, {CurrentAppRateLimitS} : {MaxAppRateLimitS}");
         }
     }
 }

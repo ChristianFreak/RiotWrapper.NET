@@ -22,8 +22,8 @@ namespace RiotWrapper
     public class ApiCaller
     {
         private string Token { get; set; }
+        private static bool FirstRequest { get; set; } = true;
         private static RateLimiter Limiter { get; set; } = new RateLimiter();
-        private static bool Startup { get; set; } = true;
 
         public ApiCaller(string Token)
         {
@@ -159,14 +159,6 @@ namespace RiotWrapper
 
         private async Task<HttpContent> GetRequest(string Region, string UrlExtension)
         {
-            if(Startup == false)
-            {
-                if(Limiter.CheckRateLimit())
-                {
-                    Startup = true;
-                }
-            }
-
             using (HttpClient Client = new HttpClient(new HttpClientHandler()
             {
                 UseProxy = false
@@ -177,19 +169,20 @@ namespace RiotWrapper
                 Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                             
                 HttpResponseMessage Respone = await Client.GetAsync($"{UrlExtension}?api_key={Token}");
-                Console.WriteLine(Respone);
 
-                var AppHeader = Respone.Headers.FirstOrDefault(x => x.Key == "X-App-Rate-Limit-Count");
+                var CountHeaderValue = Respone.Headers.FirstOrDefault(x => x.Key == "X-App-Rate-Limit-Count").Value.FirstOrDefault();
+                var LimitHeaderValue = Respone.Headers.FirstOrDefault(x => x.Key == "X-App-Rate-Limit").Value.FirstOrDefault();
 
-                if (Startup)
+                if(FirstRequest)
                 {
-                    Limiter.InitializeAppStartupTime(AppHeader);
-                    Startup = false;
+                    Limiter.InitializeMTime();
+                    Limiter.InitializeSTime();
+                    FirstRequest = false;
                 }
-                else
-                {
-                    Limiter.AppRequests++;
-                }
+
+                Limiter.SetVariablesFromHeaderData(CountHeaderValue, LimitHeaderValue);
+                await Limiter.CheckRateLimits();
+
                 return Respone.Content;
             }
         }

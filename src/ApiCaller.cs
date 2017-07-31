@@ -15,19 +15,15 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Linq;
-using System.Timers;
-using System.Net;
-using System.IO;
-using System.Threading;
+using RiotWrapper.NET;
 
 namespace RiotWrapper
 {
     public class ApiCaller
     {
         private string Token { get; set; }
-        private static bool RateLimitting;
-        private int AppPerSecond = 20, AppPerTwoMinutes = 100;
-        private int MethodPerTenSeconds = 20000, MethodPerTenMinutes = 120000000;
+        private static RateLimiter Limiter { get; set; } = new RateLimiter();
+        private static bool Startup { get; set; } = true;
 
         public ApiCaller(string Token)
         {
@@ -163,9 +159,12 @@ namespace RiotWrapper
 
         private async Task<HttpContent> GetRequest(string Region, string UrlExtension)
         {
-            while(RateLimitting)
+            if(Startup == false)
             {
-                Thread.Sleep(1000);
+                if(Limiter.CheckRateLimit())
+                {
+                    Startup = true;
+                }
             }
 
             using (HttpClient Client = new HttpClient(new HttpClientHandler()
@@ -178,16 +177,18 @@ namespace RiotWrapper
                 Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                             
                 HttpResponseMessage Respone = await Client.GetAsync($"{UrlExtension}?api_key={Token}");
+                Console.WriteLine(Respone);
 
-                var Header = Respone.Headers.FirstOrDefault(x => x.Key == "X-Method-Rate-Limit-Count");
+                var AppHeader = Respone.Headers.FirstOrDefault(x => x.Key == "X-App-Rate-Limit-Count");
 
-                if(Header.Value.FirstOrDefault() == "99:120,19:20")
+                if (Startup)
                 {
-                    RateLimitting = true;
+                    Limiter.InitializeAppStartupTime(AppHeader);
+                    Startup = false;
                 }
                 else
                 {
-                    RateLimitting = false;
+                    Limiter.AppRequests++;
                 }
                 return Respone.Content;
             }

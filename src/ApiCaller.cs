@@ -14,13 +14,20 @@ using System.Threading.Tasks;
 
 using System.Net.Http;
 using System.Net.Http.Headers;
-
+using System.Linq;
+using System.Timers;
+using System.Net;
+using System.IO;
+using System.Threading;
 
 namespace RiotWrapper
 {
     public class ApiCaller
     {
         private string Token { get; set; }
+        private static bool RateLimitting;
+        private int AppPerSecond = 20, AppPerTwoMinutes = 100;
+        private int MethodPerTenSeconds = 20000, MethodPerTenMinutes = 120000000;
 
         public ApiCaller(string Token)
         {
@@ -156,6 +163,11 @@ namespace RiotWrapper
 
         private async Task<HttpContent> GetRequest(string Region, string UrlExtension)
         {
+            while(RateLimitting)
+            {
+                Thread.Sleep(1000);
+            }
+
             using (HttpClient Client = new HttpClient(new HttpClientHandler()
             {
                 UseProxy = false
@@ -164,8 +176,19 @@ namespace RiotWrapper
                 Client.BaseAddress = new Uri("https://" + Region.ToLower() + ".api.riotgames.com/api");
                 Client.DefaultRequestHeaders.Accept.Clear();
                 Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
+                            
                 HttpResponseMessage Respone = await Client.GetAsync($"{UrlExtension}?api_key={Token}");
+
+                var Header = Respone.Headers.FirstOrDefault(x => x.Key == "X-Method-Rate-Limit-Count");
+
+                if(Header.Value.FirstOrDefault() == "99:120,19:20")
+                {
+                    RateLimitting = true;
+                }
+                else
+                {
+                    RateLimitting = false;
+                }
                 return Respone.Content;
             }
         }

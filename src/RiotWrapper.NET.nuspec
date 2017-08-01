@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>RiotWrapper.NET</id>
+    <version>1.0.0</version>
+    <title>RiotWrapper.NET</title>
+    <authors>ChristianFreak</authors>
+    <owners>ChristianFreak</owners>
+    <licenseUrl>https://github.com/ChristianFreak/RiotWrapper.NET/blob/master/License</licenseUrl>
+    <projectUrl>https://github.com/ChristianFreak/RiotWrapper.NET</projectUrl>
+    <iconUrl>https://weneedfun.com/wp-content/uploads/2016/08/The-Color-Black-9.jpg</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>An asynchronus .NET wrapper for the League of Legends API</description>
+    <releaseNotes>Initial Release</releaseNotes>
+    <copyright>Copyright 2017</copyright>
+    <tags>League of Legends API .NET Christian Freak Riot Sharp Wrapper</tags>
+  </metadata>
+</package>

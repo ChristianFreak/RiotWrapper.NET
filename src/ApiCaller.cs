@@ -23,7 +23,8 @@ namespace RiotWrapper
     {
         private string Token { get; set; }
         private static bool FirstRequest { get; set; } = true;
-        private static RateLimiter Limiter { get; set; } = new RateLimiter();
+        private static RateLimiter AppLimiter { get; set; } = new RateLimiter();
+        private static RateLimiter MethodLimiter { get; set; } = new RateLimiter();
 
         public ApiCaller(string Token)
         {
@@ -170,18 +171,24 @@ namespace RiotWrapper
                             
                 HttpResponseMessage Respone = await Client.GetAsync($"{UrlExtension}?api_key={Token}");
 
-                var CountHeaderValue = Respone.Headers.FirstOrDefault(x => x.Key == "X-App-Rate-Limit-Count").Value.FirstOrDefault();
-                var LimitHeaderValue = Respone.Headers.FirstOrDefault(x => x.Key == "X-App-Rate-Limit").Value.FirstOrDefault();
+                var AppCountHeaderValue = Respone.Headers.FirstOrDefault(x => x.Key == "X-App-Rate-Limit-Count").Value.FirstOrDefault();
+                var AppLimitHeaderValue = Respone.Headers.FirstOrDefault(x => x.Key == "X-App-Rate-Limit").Value.FirstOrDefault();
+                var MethodCountHeaderValue = Respone.Headers.FirstOrDefault(x => x.Key == "X-Method-Rate-Limit-Count").Value.FirstOrDefault();
+                var MethodLimitHeaderValue = Respone.Headers.FirstOrDefault(x => x.Key == "X-Method-Rate-Limit").Value.FirstOrDefault();
 
-                if(FirstRequest)
+                if (FirstRequest)
                 {
-                    Limiter.InitializeMTime();
-                    Limiter.InitializeSTime();
+                    AppLimiter.InitializeMTime();
+                    AppLimiter.InitializeSTime();
+                    MethodLimiter.InitializeMTime();
+                    MethodLimiter.InitializeSTime();
                     FirstRequest = false;
                 }
 
-                Limiter.SetVariablesFromHeaderData(CountHeaderValue, LimitHeaderValue);
-                await Limiter.CheckRateLimits();
+                AppLimiter.SetVariablesFromHeaderData(AppCountHeaderValue, AppLimitHeaderValue);
+                MethodLimiter.SetVariablesFromHeaderData(MethodCountHeaderValue, MethodLimitHeaderValue);
+                await AppLimiter.CheckRateLimits();
+                await MethodLimiter.CheckRateLimits();
 
                 return Respone.Content;
             }

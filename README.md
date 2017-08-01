@@ -8,7 +8,7 @@ The wrapper needs at least one request to get your current rates.
 <br> 2.Then restarting the program and make another call in still less than two minutes.
 <br> 3.Repeating second step.
 <br> Then you have hit the real api rate limit with 100 reuqests in two minutes!
-### <br> AVOID THIS STEPS ABOVE!
+### <br> AVOID THESE STEPS ABOVE!
 
 # Package available through Nuget
 https://www.nuget.org/packages/RiotWrapper.NET/

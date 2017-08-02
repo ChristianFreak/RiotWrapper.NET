@@ -7,6 +7,7 @@ using RiotWrapper.Static.Runes;
 using RiotWrapper.Static.SummonerSpells;
 using System; 
 using System.Collections.Generic;
+using System.Net.Cache;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -106,9 +107,10 @@ namespace RiotWrapper.Static
 
         private async Task<HttpContent> GetRequest(string Region, string Url)
         {
-            using (HttpClient Client = new HttpClient(new HttpClientHandler()
+            using (HttpClient Client = new HttpClient(new WebRequestHandler()
             {
-                UseProxy = false
+                UseProxy = false,
+                CachePolicy = new RequestCachePolicy(RequestCacheLevel.CacheIfAvailable)
             }))
             {
                 Client.BaseAddress = new Uri("https://" + Region.ToLower() + ".api.riotgames.com/api");

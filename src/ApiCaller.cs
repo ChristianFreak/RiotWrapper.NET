@@ -7,15 +7,16 @@ using RiotWrapper.Runes_V3;
 using RiotWrapper.Spectator_V3;
 using RiotWrapper.Status_V3;
 using RiotWrapper.Summoner_V3;
+using RiotWrapper.NET;
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Linq;
-using RiotWrapper.NET;
+using System.Net.Cache;
 
 namespace RiotWrapper
 {
@@ -157,12 +158,13 @@ namespace RiotWrapper
             HttpContent Summoner = await GetRequest(Reg.ToString(), $"/lol/summoner/v3/summoners/by-name/{SummonerName}");
             return await Summoner.ReadAsAsync<Summoner>();
         }
-
+        
         private async Task<HttpContent> GetRequest(string Region, string UrlExtension)
         {
-            using (HttpClient Client = new HttpClient(new HttpClientHandler()
+            using (HttpClient Client = new HttpClient(new WebRequestHandler()
             {
-                UseProxy = false
+                UseProxy = false,
+                CachePolicy = new RequestCachePolicy(RequestCacheLevel.CacheIfAvailable)
             }))
             {
                 Client.BaseAddress = new Uri("https://" + Region.ToLower() + ".api.riotgames.com/api");

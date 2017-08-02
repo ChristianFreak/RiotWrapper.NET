@@ -6,13 +6,11 @@ namespace RiotWrapper.NET
 {
     public class RateLimiter
     {
-        //Per two minutes
         private int CurrentAppRateLimitM { get; set; }
         private int MaxAppRateLimitM { get; set; }
         private int AppRateLimitTimeM { get; set; }
         private TimeSpan AppRateLimitMStart { get; set; }
 
-        //Per ten seconds
         private int CurrentAppRateLimitS { get; set; }
         private int MaxAppRateLimitS { get; set; }
         private int AppRateLimitTimeS { get; set; }

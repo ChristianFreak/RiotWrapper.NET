@@ -20,6 +20,6 @@ namespace RiotWrapper.Champion_V3
         public bool FreeToPlay { get; set; }
 
         [JsonProperty("id")]
-        public long Id;
+        public long Id { get; set; }
     }
 }

@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Threading;
 using System.Threading.Tasks;
 
-namespace RiotWrapper.NET
+namespace RiotWrapper.Limitting
 {
     public class RateLimiter
     {

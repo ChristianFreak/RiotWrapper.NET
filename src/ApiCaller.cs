@@ -7,7 +7,7 @@ using RiotWrapper.Runes_V3;
 using RiotWrapper.Spectator_V3;
 using RiotWrapper.Status_V3;
 using RiotWrapper.Summoner_V3;
-using RiotWrapper.NET;
+using RiotWrapper.Limitting;
 
 using System;
 using System.Linq;
